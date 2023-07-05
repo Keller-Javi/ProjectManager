@@ -1,0 +1,37 @@
+{% extends 'layout/base.html' %}
+
+{% block body %}
+<h2 class="mb-4"> El proyecto a eliminar es el siguiente: </h2>
+
+<div class="container list-group">
+    <div class="list-group-item bg-light p-2 bg-opacity-75">
+        <h3> {{ project }} </h3>
+        <p> Descripción: {{ project.description }} </p>
+        <p> Fecha de creación: {{ project.date_created }} </p>
+
+        {% if project.date_completed is null %}
+            <p> Estado: En proceso </p>
+        {% else %}
+        
+            <p> Estado: Terminado </p>
+            <p> Fecha de finalización: {{ project.date_created }} </p>
+        {% endif %}
+    </div>
+    <div class="list-group-item bg-light bg-opacity-75 mb-4">
+        <div class="d-flex justify-content-center">
+            <div class="text-center">
+                <h4> Esta seguro que quiere eliminar? </h4>
+                <div class="btn-group">
+                    <form method="post">
+                        {% csrf_token %}
+                        <button class="btn btn-danger"> Eliminar </button>
+                    </form>
+                    <form action="{% url 'home' %}">
+                        <button class="btn btn-warning"> Cancelar </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'layout/base.html' %}
+
+{% block body %}
+
+<div class="d-flex justify-content-end">
+    <form action="{% url 'logout' %}">
+        <button class="btn btn-danger">
+            Cerrar sesión
+        </button>
+    </form>
+</div>
+
+<h1 class="mb-4"> Lista de proyectos: </h1>
+
+<div class="container">
+    <form action='{% url "create_project" %}'>
+        <button class="btn btn-primary mb-4"> Crear proyecto </button>
+    </form>
+
+    {% for project in projects %}
+
+    <ul class="list-group" >
+        <a href="" class="list-group-item bg-light p-2 bg-opacity-75"> <!-- bg-light bg-gradient -->
+    
+        <h3> {{ project }} </h3>
+        <p> Descripción: {{ project.description }} </p>
+        <p> Fecha de creación: {{ project.date_created }} </p>
+
+        {% if project.date_completed is null %}
+            <p> Estado: En proceso </p>
+        {% else %}
+        
+            <p> Estado: Terminado </p>
+            <p> Fecha de finalización: {{ project.date_created }} </p>
+        {% endif %}
+
+        <div class="btn-group" role="group" aria-label="Basic example">
+            {% if project.date_completed is null %}
+                <form action="{% url 'done_project' project.id %}">
+                    <button class="btn btn-success"> Listo </button>
+                </form>
+            {% endif %}
+            <form action="{% url 'delete_project' project.id %}">
+                <button class="btn btn-danger"> Eliminar </button>
+            </form>
+            <form action="{% url 'edit_project' project.id %}">
+                <button class="btn btn-warning"> Editar </button>
+            </form>
+        </div>     
+        </a>
+    </ul>
+    {% endfor %}
+</div>
+
+{% endblock %}

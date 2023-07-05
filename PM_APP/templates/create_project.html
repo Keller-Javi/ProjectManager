@@ -1,0 +1,67 @@
+{% extends 'layout/base.html' %}
+
+
+{% block body %}
+
+{% if error %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div> 
+{% endif %}
+
+{% if not project %} <!-- En caso de que project sea true quiere decir que se va a editar, en caso de que sea false o null quiere decir que va a crear un proyecto-->
+    <h3> Crear un nuevo proyecto: </h3>
+{% else %}
+    <h3> Editar el proyecto: </h3>
+{% endif %}
+
+<div class="p-4 container">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {% if not project %}
+            <button class="btn btn-success">
+                Crear
+            </button>
+        {% else %}
+
+            
+            Modificar estado del proyecto:
+            <div class="form-check">
+                {% if project.date_completed %} 
+                    <input class="form-check-input" type="radio" name="state" value="Completado" checked id="flexRadioDefault1">
+                {% else %}
+                    <input class="form-check-input" type="radio" name="state" value="Completado" id="flexRadioDefault1">
+                {% endif %}
+                
+                <label class="form-check-label" for="flexRadioDefault2">
+                    Completado
+                </label>
+            </div>
+            <div class="form-check">
+                {% if project.date_completed %} 
+                    <input class="form-check-input" type="radio" name="state" value="NoCompletado" id="flexRadioDefault1">
+                {% else %}
+                    <input class="form-check-input" type="radio" name="state" value="NoCompletado" checked id="flexRadioDefault1">
+                {% endif %}
+                
+                <label class="form-check-label" for="flexRadioDefault1">
+                    No completado
+                </label>
+            </div>
+            
+
+            <button class="btn btn-success mt-4">
+                Editar
+            </button>
+        {% endif %}
+    </form>
+
+    <form action="{% url 'home' %}">
+        <button class="btn btn-warning">
+            Volver
+        </button>
+    </form>
+</div>
+
+{% endblock %}
