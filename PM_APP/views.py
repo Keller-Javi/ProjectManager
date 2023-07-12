@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from PM_APP.models import Project, Task
-from PM_APP.forms import ProjectForm
+from PM_APP.forms import ProjectForm, TaskForm
 
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
@@ -96,3 +96,60 @@ def edit_project(request, id):
             return redirect('home')
         except ValueError:
             return render(request, 'create_project.html', {'form': ProjectForm, 'project': project, 'error': 'Ingrese datos validos!.'})
+
+def tasks(request, project_id):
+    tasks = Task.objects.filter(project_id=project_id)
+    project = get_object_or_404(Project, id=project_id)
+    return render(request, 'tasks.html', {'tasks': tasks, 'project': project})
+
+def create_task(request, project_id):
+    if request.method == 'GET':
+        return render(request, 'create_task.html', {'form': TaskForm})
+    else:
+        try:
+            form = TaskForm(request.POST)
+            new_task = form.save(commit=False)
+            new_task.user = request.user
+            new_task.project_id = project_id
+            new_task.save() 
+            return redirect('tasks', project_id=project_id)
+        except ValueError:
+            return render(request, 'create_project.html', {'form': ProjectForm, 'error': 'Ingrese datos validos!.'})
+
+def inprocess_task(request, id):
+    task = get_object_or_404(Task, id=id)
+    task.state = 1
+    task.save()
+    return redirect('tasks', project_id=task.project_id)
+
+def done_task(request, id):
+    task = get_object_or_404(Task, id=id)
+    task.state = 2
+    task.date_completed = timezone.now()
+    task.save()
+    return redirect('tasks', project_id=task.project_id)
+
+def delete_task(request, id):
+    task = get_object_or_404(Task, id=id)
+    project_id = task.project_id
+    task.delete()
+    return redirect('tasks', project_id=project_id)
+
+def edit_task(request, id):
+    task = get_object_or_404(Task, id=id)
+    if request.method == 'GET':
+        form = TaskForm(instance=task)
+        return render(request, 'create_task.html', {'form': form, 'task': task})
+    else:
+        try:
+            form = TaskForm(request.POST, instance=task)
+            new_task = form.save(commit=False)
+
+            new_state = int(request.POST['state'])
+            if new_state is not task.state:
+                new_task.state = new_state
+
+            new_task.save() 
+            return redirect('tasks', project_id=new_task.project_id)
+        except ValueError:
+            return render(request, 'create_project.html', {'form': ProjectForm, 'error': 'Ingrese datos validos!.'})

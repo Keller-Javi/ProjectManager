@@ -1,0 +1,153 @@
+{% extends 'layout/base.html' %}
+
+{% block body %}
+
+<h1 class="mb-4">  Proyecto: {{ project }} </h1>
+<h2 class="mb-4"> Lista de tareas: </h2>
+
+<div class="container">
+    <form action='{% url "create_task" project.id %}'>
+        <button class="btn btn-primary mb-4"> Crear nueva tarea </button>
+    </form>
+
+    <div class="mb-4"></div>
+    {% if tasks  %}
+    <h3> Tareas en proceso </h3>
+    {% for task in tasks %} <!-- Tareas en proceso -->
+        {% if task.state == 1 %}
+            <ul class="list-group" >
+                <li class="list-group-item bg-light p-2 bg-opacity-75"> <!-- bg-light bg-gradient -->
+        
+                <h3> {{ task }} </h3>
+                <p> Descripción: {{ task.description }} </p>
+                <p> Fecha de creación: {{ task.date_created }} </p>
+    
+                {% if project.date_completed %}
+                    <p> Estado: Terminado </p>
+                    <p> Fecha de finalización: {{ task.date_created }} </p>
+                {% endif %}
+    
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    {% if task.state == 0 %}
+                        <form action="{% url 'inprocess_task' task.id %}">
+                            <button class="btn btn-success">
+                                En proceso
+                            </button>
+                        </form>
+                    {% elif task.state == 1 %}
+                        <form action="{% url 'done_task' task.id %}">
+                            <button class="btn btn-success">
+                                Terminado
+                            </button>
+                        </form>
+                    {% endif %}
+                    <form action="{% url 'delete_task' task.id %}">
+                        <button class="btn btn-danger"> Eliminar </button>
+                    </form>
+                    <form action="{% url 'edit_task' task.id %}">
+                        <button class="btn btn-warning"> Editar </button>
+                    </form>
+                </div>     
+            </li>
+            </ul>
+        {% endif %}
+    {% endfor %}
+
+    <div class="mb-4"></div>
+    <h3> Tareas en espera </h3>
+    {% for task in tasks %} <!-- Tareas en espera -->
+        {% if task.state == 0 %}
+        <ul class="list-group" >
+            <li class="list-group-item bg-light p-2 bg-opacity-75"> <!-- bg-light bg-gradient -->
+    
+            <h3> {{ task }} </h3>
+            <p> Descripción: {{ task.description }} </p>
+            <p> Fecha de creación: {{ task.date_created }} </p>
+
+            {% if project.date_completed %}
+                <p> Estado: Terminado </p>
+                <p> Fecha de finalización: {{ task.date_created }} </p>
+            {% endif %}
+
+            <div class="btn-group" role="group" aria-label="Basic example">
+                {% if task.state == 0 %}
+                    <form action="{% url 'inprocess_task' task.id %}">
+                        <button class="btn btn-success">
+                            En proceso
+                        </button>
+                    </form>
+                {% elif task.state == 1 %}
+                    <form action="{% url 'done_task' task.id %}">
+                        <button class="btn btn-success">
+                            Terminado
+                        </button>
+                    </form>
+                {% endif %}
+                <form action="{% url 'delete_task' task.id %}">
+                    <button class="btn btn-danger"> Eliminar </button>
+                </form>
+                <form action="{% url 'edit_task' task.id %}">
+                    <button class="btn btn-warning"> Editar </button>
+                </form>
+            </div>     
+        </li>
+        </ul>
+        {% endif %}
+    {% endfor %}
+
+    <div class="mb-4"></div>
+    <h3> Tareas completas </h3>
+    {% for task in tasks %} <!-- Tareas completadas -->
+        {% if task.state == 2 %}
+        <ul class="list-group" >
+            <li class="list-group-item bg-light p-2 bg-opacity-75"> <!-- bg-light bg-gradient -->
+    
+            <h3> {{ task }} </h3>
+            <p> Descripción: {{ task.description }} </p>
+            <p> Fecha de creación: {{ task.date_created }} </p>
+
+            {% if project.date_completed %}
+                <p> Estado: Terminado </p>
+                <p> Fecha de finalización: {{ task.date_created }} </p>
+            {% endif %}
+
+            <div class="btn-group" role="group" aria-label="Basic example">
+                {% if task.state == 0 %}
+                    <form action="{% url 'inprocess_task' task.id %}">
+                        <button class="btn btn-success">
+                            En proceso
+                        </button>
+                    </form>
+                {% elif task.state == 1 %}
+                    <form action="{% url 'done_task' task.id %}">
+                        <button class="btn btn-success">
+                            Terminado
+                        </button>
+                    </form>
+                {% endif %}
+                <form action="{% url 'delete_task' task.id %}">
+                    <button class="btn btn-danger"> Eliminar </button>
+                </form>
+                <form action="{% url 'edit_task' task.id %}">
+                    <button class="btn btn-warning"> Editar </button>
+                </form>
+            </div>     
+        </li>
+        </ul>
+        {% endif %}
+    {% endfor %}
+
+    {% else %}
+
+        <h3 class="mb-4"> Lista de tareas vacía... </h3>
+
+    {% endif %}
+    <div class="mb-4"></div>
+    <form action="{% url 'home' %}">
+        <button class="btn btn-warning">
+            Volver
+        </button>
+    </form>
+</div>
+
+{% endblock %}

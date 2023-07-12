@@ -2,14 +2,6 @@
 
 {% block body %}
 
-<div class="d-flex justify-content-end">
-    <form action="{% url 'logout' %}">
-        <button class="btn btn-danger">
-            Cerrar sesión
-        </button>
-    </form>
-</div>
-
 <h1 class="mb-4"> Lista de proyectos: </h1>
 
 <div class="container">
@@ -20,7 +12,7 @@
     {% for project in projects %}
 
     <ul class="list-group" >
-        <a href="" class="list-group-item bg-light p-2 bg-opacity-75"> <!-- bg-light bg-gradient -->
+        <a href="{% url 'tasks' project.id %}" class="list-group-item bg-light p-2 bg-opacity-75"> <!-- bg-light bg-gradient -->
     
         <h3> {{ project }} </h3>
         <p> Descripción: {{ project.description }} </p>

@@ -1,0 +1,75 @@
+{% extends 'layout/base.html' %}
+
+
+{% block body %}
+
+{% if error %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div> 
+{% endif %}
+
+{% if not task %} <!-- En caso de que task sea true quiere decir que se va a editar, en caso de que sea false o null quiere decir que va a crear un proyecto-->
+    <h3> Crear una nueva tarea: </h3>
+{% else %}
+    <h3> Editar la tarea: </h3>
+{% endif %}
+
+<div class="p-4 container">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        {% if not task %}
+            <button class="btn btn-success">
+                Crear
+            </button>
+        {% else %}
+
+        <div class="form-check">
+            {% if task.state == 1 %} 
+                <input class="form-check-input" type="radio" name="state" value="1" checked id="flexRadioDefault1">
+            {% else %}
+                <input class="form-check-input" type="radio" name="state" value="1" id="flexRadioDefault1">
+            {% endif %}
+            
+            <label class="form-check-label" for="flexRadioDefault1">
+                En Proceso
+            </label>
+        </div>
+        <div class="form-check">
+            {% if task.state == 0 %} 
+                <input class="form-check-input" type="radio" name="state" value="0" checked id="flexRadioDefault1">
+            {% else %}
+                <input class="form-check-input" type="radio" name="state" value="0" id="flexRadioDefault1">
+            {% endif %}
+            
+            <label class="form-check-label" for="flexRadioDefault1">
+                En espera
+            </label>
+        </div>
+        <div class="form-check">
+            {% if task.state == 2 %} 
+                <input class="form-check-input" type="radio" name="state" value="2" checked id="flexRadioDefault1">
+            {% else %}
+                <input class="form-check-input" type="radio" name="state" value="2" id="flexRadioDefault1">
+            {% endif %}
+            
+            <label class="form-check-label" for="flexRadioDefault1">
+                Terminado
+            </label>
+        </div>
+            <button class="btn btn-success mt-4">
+                Editar
+            </button>
+        {% endif %}
+    </form>
+
+    <form action="{% url 'tasks' task.project_id %}">
+        <button class="btn btn-warning">
+            Volver
+        </button>
+    </form>
+</div>
+
+{% endblock %}
